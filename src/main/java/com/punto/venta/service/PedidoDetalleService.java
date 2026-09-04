@@ -1,5 +1,11 @@
 package com.punto.venta.service;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.punto.venta.dto.PedidoDetalleDTO;
 import com.punto.venta.entity.Pedido;
 import com.punto.venta.entity.PedidoDetalle;
@@ -7,12 +13,6 @@ import com.punto.venta.entity.Producto;
 import com.punto.venta.repository.PedidoDetalleRepository;
 import com.punto.venta.repository.PedidoRepository;
 import com.punto.venta.repository.ProductoRepository;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @Service
 public class PedidoDetalleService {
@@ -31,12 +31,12 @@ public class PedidoDetalleService {
         this.productoRepository = productoRepository;
     }
 
-    // GET
+    // GET - MOSTRAR TODOS
     public List<PedidoDetalle> findAll() {
         return pedidoDetalleRepository.findAll();
     }
 
-    // POST
+    // POST - CREAR
     public PedidoDetalle save(PedidoDetalleDTO dto) {
 
         PedidoDetalle detalle = new PedidoDetalle();
@@ -148,5 +148,30 @@ public class PedidoDetalleService {
         detalleExistente.setEstado(false);
 
         return pedidoDetalleRepository.save(detalleExistente);
+    }
+
+    // MOSTRAR ACTIVOS
+    public List<PedidoDetalle> mostrarActivos() {
+
+        return pedidoDetalleRepository
+                .findByEstadoTrueOrderByIdPedidoDetalleDesc();
+    }
+
+    // MOSTRAR ACTIVOS CON FILTRO
+    public List<PedidoDetalle> mostrarActivosFiltro(String filtro) {
+
+        return pedidoDetalleRepository
+                .findByEstadoTrueAndIdProducto_NombreContainingIgnoreCaseOrderByIdPedidoDetalleDesc(
+                        filtro
+                );
+    }
+
+    // MOSTRAR TOP 3 ACTIVOS CON FILTRO
+    public List<PedidoDetalle> mostrarActivosFiltroTop(String filtro) {
+
+        return pedidoDetalleRepository
+                .findTop3ByEstadoTrueAndIdProducto_NombreContainingIgnoreCaseOrderByIdPedidoDetalleDesc(
+                        filtro
+                );
     }
 }

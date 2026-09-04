@@ -23,7 +23,7 @@ public class PedidoDetalleController {
         this.pedidoDetalleService = pedidoDetalleService;
     }
 
-    // GET
+    // GET - TODOS
     @GetMapping
     public List<PedidoDetalle> getAllPedidoDetalles() {
         return pedidoDetalleService.findAll();
@@ -110,29 +110,52 @@ public class PedidoDetalleController {
                     ));
         }
     }
+
     // ANULAR
     @PutMapping("/anular/{idPedidoDetalle}")
     public ResponseEntity<MessageResponse> anularPedidoDetalle(
-        @PathVariable Integer idPedidoDetalle) {
+            @PathVariable Integer idPedidoDetalle) {
 
-    try {
+        try {
 
-        pedidoDetalleService.anular(idPedidoDetalle);
+            pedidoDetalleService.anular(idPedidoDetalle);
 
-        return ResponseEntity.ok(
-                new MessageResponse(
-                        "Detalle de pedido anulado con éxito"
-                )
-        );
+            return ResponseEntity.ok(
+                    new MessageResponse(
+                            "Detalle de pedido anulado con éxito"
+                    )
+            );
 
-    } catch (Exception e) {
+        } catch (Exception e) {
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new MessageResponse(
-                        "Error al anular el detalle de pedido: "
-                                + e.getMessage()
-                ));
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new MessageResponse(
+                            "Error al anular el detalle de pedido: "
+                                    + e.getMessage()
+                    ));
+        }
     }
-}
+
+    // MOSTRAR ACTIVOS
+    @GetMapping("/activos")
+    public List<PedidoDetalle> mostrarActivos() {
+        return pedidoDetalleService.mostrarActivos();
+    }
+
+    // MOSTRAR ACTIVOS CON FILTRO
+    @GetMapping("/activos/filtro")
+    public List<PedidoDetalle> mostrarActivosFiltro(
+            @RequestParam String filtro) {
+
+        return pedidoDetalleService.mostrarActivosFiltro(filtro);
+    }
+
+    // MOSTRAR TOP 3 ACTIVOS CON FILTRO
+    @GetMapping("/activos/filtro/top")
+    public List<PedidoDetalle> mostrarActivosFiltroTop(
+            @RequestParam String filtro) {
+
+        return pedidoDetalleService.mostrarActivosFiltroTop(filtro);
+    }
 }

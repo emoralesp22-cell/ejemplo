@@ -21,11 +21,13 @@ public class ClienteController {
         this.clienteService = clienteService;
     }
 
+    // GET - TODOS
     @GetMapping
     public List<Cliente> getAllClientes() {
         return clienteService.findAll();
     }
 
+    // POST
     @PostMapping
     public ResponseEntity<MessageResponse> createCliente(
             @RequestBody ClienteDTO clienteDTO) {
@@ -49,68 +51,108 @@ public class ClienteController {
                     ));
         }
     }
-   @PutMapping("/{idCliente}")
-public ResponseEntity<MessageResponse> actualizarCliente(
-        @PathVariable Integer idCliente,
-        @RequestBody ClienteDTO clienteDTO) {
 
-    try {
-        clienteService.actualizar(idCliente, clienteDTO);
+    // PUT - ACTUALIZAR
+    @PutMapping("/{idCliente}")
+    public ResponseEntity<MessageResponse> actualizarCliente(
+            @PathVariable Integer idCliente,
+            @RequestBody ClienteDTO clienteDTO) {
 
-        return ResponseEntity.ok(
-                new MessageResponse("Cliente actualizado con éxito")
-        );
+        try {
 
-    } catch (Exception e) {
+            clienteService.actualizar(
+                    idCliente,
+                    clienteDTO
+            );
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new MessageResponse(
-                        "Error al actualizar el cliente: " + e.getMessage()
-                ));
+            return ResponseEntity.ok(
+                    new MessageResponse(
+                            "Cliente actualizado con éxito"
+                    )
+            );
+
+        } catch (Exception e) {
+
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new MessageResponse(
+                            "Error al actualizar el cliente: "
+                                    + e.getMessage()
+                    ));
+        }
     }
-} 
-@DeleteMapping("/{idCliente}")
-public ResponseEntity<MessageResponse> eliminarCliente(
-        @PathVariable Integer idCliente) {
 
-    try {
+    // DELETE
+    @DeleteMapping("/{idCliente}")
+    public ResponseEntity<MessageResponse> eliminarCliente(
+            @PathVariable Integer idCliente) {
 
-        clienteService.eliminar(idCliente);
+        try {
 
-        return ResponseEntity.ok(
-                new MessageResponse("Cliente eliminado con éxito")
-        );
+            clienteService.eliminar(idCliente);
 
-    } catch (Exception e) {
+            return ResponseEntity.ok(
+                    new MessageResponse(
+                            "Cliente eliminado con éxito"
+                    )
+            );
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new MessageResponse(
-                        "Error al eliminar el cliente"
-                ));
+        } catch (Exception e) {
+
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new MessageResponse(
+                            "Error al eliminar el cliente: "
+                                    + e.getMessage()
+                    ));
+        }
     }
-}
-@PutMapping("anular/{idCliente}")
-public ResponseEntity<MessageResponse> anularCliente(
-        @PathVariable Integer idCliente) {
 
-    try {
+    // ANULAR
+    @PutMapping("/anular/{idCliente}")
+    public ResponseEntity<MessageResponse> anularCliente(
+            @PathVariable Integer idCliente) {
 
-        clienteService.anular(idCliente);
+        try {
 
-        return ResponseEntity.ok(
-                new MessageResponse("Cliente anulado con éxito")
-        );
+            clienteService.anular(idCliente);
 
-    } catch (Exception e) {
+            return ResponseEntity.ok(
+                    new MessageResponse(
+                            "Cliente anulado con éxito"
+                    )
+            );
 
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new MessageResponse(
-                        "Error al anular el cliente"
-                ));
+        } catch (Exception e) {
+
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new MessageResponse(
+                            "Error al anular el cliente: "
+                                    + e.getMessage()
+                    ));
+        }
     }
-}
 
+    // MOSTRAR ACTIVOS
+    @GetMapping("/activos")
+    public List<Cliente> mostrarActivos() {
+        return clienteService.mostrarActivos();
+    }
+
+    // MOSTRAR ACTIVOS CON FILTRO
+    @GetMapping("/activos/filtro")
+    public List<Cliente> mostrarActivosFiltro(
+            @RequestParam String filtro) {
+
+        return clienteService.mostrarActivosFiltro(filtro);
+    }
+
+    // MOSTRAR TOP 3 ACTIVOS CON FILTRO
+    @GetMapping("/activos/filtro/top")
+    public List<Cliente> mostrarActivosFiltroTop(
+            @RequestParam String filtro) {
+
+        return clienteService.mostrarActivosFiltroTop(filtro);
+    }
 }

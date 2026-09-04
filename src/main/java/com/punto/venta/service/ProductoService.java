@@ -1,10 +1,10 @@
 package com.punto.venta.service;
 
 import com.punto.venta.dto.ProductoDTO;
-import com.punto.venta.entity.Producto;
 import com.punto.venta.entity.Categoria;
-import com.punto.venta.repository.ProductoRepository;
+import com.punto.venta.entity.Producto;
 import com.punto.venta.repository.CategoriaRepository;
+import com.punto.venta.repository.ProductoRepository;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class ProductoService {
         this.categoriaRepository = categoriaRepository;
     }
 
-    // GET
+    // GET - TODOS
     public List<Producto> findAll() {
         return productoRepository.findAll();
     }
@@ -128,5 +128,30 @@ public class ProductoService {
         productoExistente.setEstado(false);
 
         return productoRepository.save(productoExistente);
+    }
+
+    // MOSTRAR ACTIVOS
+    public List<Producto> mostrarActivos() {
+
+        return productoRepository
+                .findByEstadoTrueOrderByIdProductoDesc();
+    }
+
+    // MOSTRAR ACTIVOS CON FILTRO
+    public List<Producto> mostrarActivosFiltro(String filtro) {
+
+        return productoRepository
+                .findByEstadoTrueAndNombreContainingIgnoreCaseOrderByIdProductoDesc(
+                        filtro
+                );
+    }
+
+    // MOSTRAR TOP 3 ACTIVOS CON FILTRO
+    public List<Producto> mostrarActivosFiltroTop(String filtro) {
+
+        return productoRepository
+                .findTop3ByEstadoTrueAndNombreContainingIgnoreCaseOrderByIdProductoDesc(
+                        filtro
+                );
     }
 }

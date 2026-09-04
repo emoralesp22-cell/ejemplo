@@ -19,17 +19,18 @@ public class ClienteService {
         this.clienteRepository = clienteRepository;
     }
 
-    // GET
+    // GET - TODOS
     public List<Cliente> findAll() {
         return clienteRepository.findAll();
     }
 
-    // POST
+    // POST - CREAR
     public Cliente save(ClienteDTO dto) {
 
-        if (clienteRepository.existsByNombreIgnoreCaseAndApellidoIgnoreCase(
-                dto.getNombre(),
-                dto.getApellido())) {
+        if (clienteRepository
+                .existsByNombreIgnoreCaseAndApellidoIgnoreCase(
+                        dto.getNombre(),
+                        dto.getApellido())) {
 
             throw new RuntimeException("El cliente ya existe");
         }
@@ -47,9 +48,12 @@ public class ClienteService {
     }
 
     // PUT - ACTUALIZAR
-    public ClienteDTO actualizar(Integer idCliente, ClienteDTO dto) {
+    public ClienteDTO actualizar(
+            Integer idCliente,
+            ClienteDTO dto) {
 
-        Cliente clienteExistente = clienteRepository.findById(idCliente)
+        Cliente clienteExistente = clienteRepository
+                .findById(idCliente)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Cliente no encontrado"
@@ -75,13 +79,16 @@ public class ClienteService {
             clienteExistente.setFechaRegistro(dto.getFechaRegistro());
         }
 
-        return convertToDTO(clienteRepository.save(clienteExistente));
+        return convertToDTO(
+                clienteRepository.save(clienteExistente)
+        );
     }
 
-    // DELETE - ELIMINAR
+    // DELETE
     public void eliminar(Integer idCliente) {
 
         if (!clienteRepository.existsById(idCliente)) {
+
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
                     "Cliente no encontrado"
@@ -90,21 +97,50 @@ public class ClienteService {
 
         clienteRepository.deleteById(idCliente);
     }
-    
+
+    // ANULAR
     public ClienteDTO anular(Integer idCliente) {
 
-    Cliente clienteExistente = clienteRepository.findById(idCliente)
-            .orElseThrow(() -> new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Cliente no encontrado"
-            ));
+        Cliente clienteExistente = clienteRepository
+                .findById(idCliente)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Cliente no encontrado"
+                ));
 
-    clienteExistente.setEstado(false);
+        clienteExistente.setEstado(false);
 
-    return convertToDTO(clienteRepository.save(clienteExistente));
-}
+        return convertToDTO(
+                clienteRepository.save(clienteExistente)
+        );
+    }
 
-    // CONVERTIR CLIENTE A CLIENTEDTO
+    // MOSTRAR ACTIVOS
+    public List<Cliente> mostrarActivos() {
+
+        return clienteRepository
+                .findByEstadoTrueOrderByIdClienteDesc();
+    }
+
+    // MOSTRAR ACTIVOS CON FILTRO
+    public List<Cliente> mostrarActivosFiltro(String filtro) {
+
+        return clienteRepository
+                .findByEstadoTrueAndNombreContainingIgnoreCaseOrderByIdClienteDesc(
+                        filtro
+                );
+    }
+
+    // MOSTRAR TOP 3 ACTIVOS CON FILTRO
+    public List<Cliente> mostrarActivosFiltroTop(String filtro) {
+
+        return clienteRepository
+                .findTop3ByEstadoTrueAndNombreContainingIgnoreCaseOrderByIdClienteDesc(
+                        filtro
+                );
+    }
+
+    // ENTITY -> DTO
     private ClienteDTO convertToDTO(Cliente cliente) {
 
         ClienteDTO dto = new ClienteDTO();
@@ -119,5 +155,4 @@ public class ClienteService {
 
         return dto;
     }
-
 }

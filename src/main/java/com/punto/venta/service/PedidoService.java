@@ -26,7 +26,7 @@ public class PedidoService {
         this.clienteRepository = clienteRepository;
     }
 
-    // GET
+    // GET - TODOS
     public List<Pedido> findAll() {
         return pedidoRepository.findAll();
     }
@@ -123,5 +123,30 @@ public class PedidoService {
         pedidoExistente.setEstado(false);
 
         return pedidoRepository.save(pedidoExistente);
+    }
+
+    // MOSTRAR ACTIVOS
+    public List<Pedido> mostrarActivos() {
+
+        return pedidoRepository
+                .findByEstadoTrueOrderByIdPedidoDesc();
+    }
+
+    // MOSTRAR ACTIVOS CON FILTRO
+    public List<Pedido> mostrarActivosFiltro(String filtro) {
+
+        return pedidoRepository
+                .findByEstadoTrueAndIdCliente_NombreContainingIgnoreCaseOrderByIdPedidoDesc(
+                        filtro
+                );
+    }
+
+    // MOSTRAR TOP 3 ACTIVOS CON FILTRO
+    public List<Pedido> mostrarActivosFiltroTop(String filtro) {
+
+        return pedidoRepository
+                .findTop3ByEstadoTrueAndIdCliente_NombreContainingIgnoreCaseOrderByIdPedidoDesc(
+                        filtro
+                );
     }
 }

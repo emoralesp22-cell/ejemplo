@@ -21,7 +21,7 @@ public class ProductoController {
         this.productoService = productoService;
     }
 
-    // GET
+    // GET - TODOS
     @GetMapping
     public List<Producto> getAllProductos() {
         return productoService.findAll();
@@ -133,5 +133,27 @@ public class ProductoController {
                                     + e.getMessage()
                     ));
         }
+    }
+
+    // MOSTRAR ACTIVOS
+    @GetMapping("/activos")
+    public List<Producto> mostrarActivos() {
+        return productoService.mostrarActivos();
+    }
+
+    // MOSTRAR ACTIVOS CON FILTRO
+    @GetMapping("/activos/filtro")
+    public List<Producto> mostrarActivosFiltro(
+            @RequestParam String filtro) {
+
+        return productoService.mostrarActivosFiltro(filtro);
+    }
+
+    // MOSTRAR TOP 3 ACTIVOS CON FILTRO
+    @GetMapping("/activos/filtro/top")
+    public List<Producto> mostrarActivosFiltroTop(
+            @RequestParam String filtro) {
+
+        return productoService.mostrarActivosFiltroTop(filtro);
     }
 }

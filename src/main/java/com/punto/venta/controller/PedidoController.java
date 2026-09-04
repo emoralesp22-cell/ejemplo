@@ -21,7 +21,7 @@ public class PedidoController {
         this.pedidoService = pedidoService;
     }
 
-    // GET
+    // GET - TODOS
     @GetMapping
     public List<Pedido> getAllPedidos() {
         return pedidoService.findAll();
@@ -133,5 +133,27 @@ public class PedidoController {
                                     + e.getMessage()
                     ));
         }
+    }
+
+    // MOSTRAR ACTIVOS
+    @GetMapping("/activos")
+    public List<Pedido> mostrarActivos() {
+        return pedidoService.mostrarActivos();
+    }
+
+    // MOSTRAR ACTIVOS CON FILTRO
+    @GetMapping("/activos/filtro")
+    public List<Pedido> mostrarActivosFiltro(
+            @RequestParam String filtro) {
+
+        return pedidoService.mostrarActivosFiltro(filtro);
+    }
+
+    // MOSTRAR TOP 3 ACTIVOS CON FILTRO
+    @GetMapping("/activos/filtro/top")
+    public List<Pedido> mostrarActivosFiltroTop(
+            @RequestParam String filtro) {
+
+        return pedidoService.mostrarActivosFiltroTop(filtro);
     }
 }

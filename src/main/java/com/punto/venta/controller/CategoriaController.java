@@ -1,4 +1,3 @@
-
 package com.punto.venta.controller;
 
 import java.util.List;
@@ -21,7 +20,7 @@ public class CategoriaController {
         this.categoriaService = categoriaService;
     }
 
-    // GET
+    // GET - TODOS
     @GetMapping
     public List<CategoriaDTO> getAllCategorias() {
         return categoriaService.findAll();
@@ -36,21 +35,24 @@ public class CategoriaController {
 
             categoriaService.save(categoriaDTO);
 
-            return ResponseEntity.ok(
-                    new MessageResponse("Categoria creada con éxito")
-            );
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(new MessageResponse(
+                            "Categoria creada con éxito"
+                    ));
 
         } catch (Exception e) {
 
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new MessageResponse(
-                            "Error al crear la categoria: " + e.getMessage()
+                            "Error al crear la categoria: "
+                                    + e.getMessage()
                     ));
         }
     }
 
-    // PUT - ACTUALIZAR
+    // PUT
     @PutMapping("/{idCategoria}")
     public ResponseEntity<MessageResponse> actualizarCategoria(
             @PathVariable Integer idCategoria,
@@ -130,5 +132,27 @@ public class CategoriaController {
                                     + e.getMessage()
                     ));
         }
+    }
+
+    // MOSTRAR ACTIVOS
+    @GetMapping("/activos")
+    public List<CategoriaDTO> mostrarActivos() {
+        return categoriaService.mostrarActivos();
+    }
+
+    // MOSTRAR ACTIVOS CON FILTRO
+    @GetMapping("/activos/filtro")
+    public List<CategoriaDTO> mostrarActivosFiltro(
+            @RequestParam String filtro) {
+
+        return categoriaService.mostrarActivosFiltro(filtro);
+    }
+
+    // MOSTRAR TOP 3 ACTIVOS CON FILTRO
+    @GetMapping("/activos/filtro/top")
+    public List<CategoriaDTO> mostrarActivosFiltroTop(
+            @RequestParam String filtro) {
+
+        return categoriaService.mostrarActivosFiltroTop(filtro);
     }
 }

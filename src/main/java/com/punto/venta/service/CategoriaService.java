@@ -20,7 +20,7 @@ public class CategoriaService {
         this.categoriaRepository = categoriaRepository;
     }
 
-    // GET
+    // GET - LISTAR TODOS
     public List<CategoriaDTO> findAll() {
         return categoriaRepository.findAll()
                 .stream()
@@ -28,7 +28,7 @@ public class CategoriaService {
                 .collect(Collectors.toList());
     }
 
-    // POST
+    // POST - CREAR
     public CategoriaDTO save(CategoriaDTO categoriaDTO) {
 
         Categoria categoria = convertToEntity(categoriaDTO);
@@ -99,6 +99,40 @@ public class CategoriaService {
         return convertirDTO(
                 categoriaRepository.save(categoriaExistente)
         );
+    }
+
+    // MOSTRAR SOLO ACTIVOS
+    public List<CategoriaDTO> mostrarActivos() {
+
+        return categoriaRepository
+                .findByEstadoTrueOrderByIdCategoriaDesc()
+                .stream()
+                .map(this::convertirDTO)
+                .collect(Collectors.toList());
+    }
+
+    // MOSTRAR ACTIVOS CON FILTRO
+    public List<CategoriaDTO> mostrarActivosFiltro(String filtro) {
+
+        return categoriaRepository
+                .findByEstadoTrueAndNombreContainingIgnoreCaseOrderByIdCategoriaDesc(
+                        filtro
+                )
+                .stream()
+                .map(this::convertirDTO)
+                .collect(Collectors.toList());
+    }
+
+    // MOSTRAR TOP 3 ACTIVOS CON FILTRO
+    public List<CategoriaDTO> mostrarActivosFiltroTop(String filtro) {
+
+        return categoriaRepository
+                .findTop3ByEstadoTrueAndNombreContainingIgnoreCaseOrderByIdCategoriaDesc(
+                        filtro
+                )
+                .stream()
+                .map(this::convertirDTO)
+                .collect(Collectors.toList());
     }
 
     // ENTITY -> DTO
