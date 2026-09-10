@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import com.punto.venta.dto.CategoriaDTO;
 import com.punto.venta.dto.MessageResponse;
 import com.punto.venta.service.CategoriaService;
+@CrossOrigin(origins = "http://localhost:5173")
 
 @RestController
 @RequestMapping("/categorias")
