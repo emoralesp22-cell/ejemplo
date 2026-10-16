@@ -3,8 +3,9 @@ package com.punto.venta.controller;
 import com.punto.venta.dto.MessageResponse;
 import com.punto.venta.dto.PedidoDTO;
 import com.punto.venta.entity.Pedido;
+import com.punto.venta.repository.PedidoDetalleRepository;
 import com.punto.venta.service.PedidoService;
-
+import com.punto.venta.dto.ReportePedidoClienteDetalleDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +17,14 @@ import java.util.List;
 public class PedidoController {
 
     private final PedidoService pedidoService;
+    private final PedidoDetalleRepository pedidoDetalleRepository;
 
-    public PedidoController(PedidoService pedidoService) {
+    public PedidoController(
+            PedidoService pedidoService,
+            PedidoDetalleRepository pedidoDetalleRepository) {
+
         this.pedidoService = pedidoService;
+        this.pedidoDetalleRepository = pedidoDetalleRepository;
     }
 
     // GET - TODOS
@@ -27,13 +33,12 @@ public class PedidoController {
         return pedidoService.findAll();
     }
 
-    // POST
+    // POST - CREAR
     @PostMapping
     public ResponseEntity<MessageResponse> crearPedido(
             @RequestBody PedidoDTO pedidoDTO) {
 
         try {
-
             pedidoService.save(pedidoDTO);
 
             return ResponseEntity
@@ -43,7 +48,6 @@ public class PedidoController {
                     ));
 
         } catch (Exception e) {
-
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new MessageResponse(
@@ -60,11 +64,7 @@ public class PedidoController {
             @RequestBody PedidoDTO pedidoDTO) {
 
         try {
-
-            pedidoService.actualizar(
-                    idPedido,
-                    pedidoDTO
-            );
+            pedidoService.actualizar(idPedido, pedidoDTO);
 
             return ResponseEntity.ok(
                     new MessageResponse(
@@ -73,7 +73,6 @@ public class PedidoController {
             );
 
         } catch (Exception e) {
-
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new MessageResponse(
@@ -89,7 +88,6 @@ public class PedidoController {
             @PathVariable Integer idPedido) {
 
         try {
-
             pedidoService.eliminar(idPedido);
 
             return ResponseEntity.ok(
@@ -99,7 +97,6 @@ public class PedidoController {
             );
 
         } catch (Exception e) {
-
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new MessageResponse(
@@ -115,7 +112,6 @@ public class PedidoController {
             @PathVariable Integer idPedido) {
 
         try {
-
             pedidoService.anular(idPedido);
 
             return ResponseEntity.ok(
@@ -125,7 +121,6 @@ public class PedidoController {
             );
 
         } catch (Exception e) {
-
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new MessageResponse(
@@ -156,4 +151,11 @@ public class PedidoController {
 
         return pedidoService.mostrarActivosFiltroTop(filtro);
     }
+
+// REPORTE DETALLADO DE PEDIDOS
+@GetMapping("/reporte-detallado")
+public List<ReportePedidoClienteDetalleDTO> reporteDetallado() {
+    return pedidoDetalleRepository
+            .obtenerReportePedidoClienteDetalle();
+}
 }
